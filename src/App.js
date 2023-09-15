@@ -1,4 +1,7 @@
-import { useState } from "react";
+import {
+	useState,
+	useEffect,
+} from "react";
 import { v4 as uuid } from "uuid";
 import "./App.css";
 import Header from "./componentes/Header/Header";
@@ -64,6 +67,45 @@ function App() {
 			puesto: "Dev FullStack",
 			fav: true,
 		},
+	]);
+
+	// Función para guardar en localStorage
+	const handleSaveToLocalStorage =
+		() => {
+			localStorage.setItem(
+				"colaboradores",
+				JSON.stringify(colaboradores)
+			);
+		};
+
+	const [
+		loadingFromStorage,
+		setLoadingFromStorage,
+	] = useState(true);
+
+	useEffect(() => {
+		// Intenta cargar datos de localStorage solo si loadingFromStorage es true
+		if (loadingFromStorage) {
+			const storedColaboradores =
+				localStorage.getItem(
+					"colaboradores"
+				);
+			if (storedColaboradores) {
+				setColaboradores(
+					JSON.parse(storedColaboradores)
+				);
+			}
+			setLoadingFromStorage(false); // Desactiva la carga desde localStorage después de cargar
+		} else {
+			// Guarda datos en localStorage cuando colaboradores cambia
+			localStorage.setItem(
+				"colaboradores",
+				JSON.stringify(colaboradores)
+			);
+		}
+	}, [
+		colaboradores,
+		loadingFromStorage,
 	]);
 
 	const [equipos, actulizarEquipos] =
@@ -142,6 +184,32 @@ function App() {
 					colaborador.id !== id
 			);
 		setColaboradores(nuevosColaboradores);
+		// Recuperar los datos almacenados en localStorage
+		const storedData =
+			localStorage.getItem(
+				"colaboradores"
+			);
+
+		// Verificar si hay datos en localStorage
+		if (storedData) {
+			// Parsear los datos de JSON a un objeto JavaScript
+			const data = JSON.parse(storedData);
+
+			// Eliminar el elemento que deseas (por ejemplo, utilizando filter)
+			const updatedData = data.filter(
+				(colaborador) =>
+					colaborador.id !== id
+			);
+
+			// Guardar los datos actualizados en localStorage
+			localStorage.setItem(
+				"colaboradores",
+				JSON.stringify(updatedData)
+			);
+
+			// Actualizar el estado si es necesario (opcional)
+			setColaboradores(updatedData);
+		}
 	};
 
 	//Actualizar color

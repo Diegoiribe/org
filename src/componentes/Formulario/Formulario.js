@@ -42,6 +42,7 @@ const Formulario = (props) => {
 			id: uudd(),
 			fav: false,
 		};
+
 		registrarColaborador(datosAEnviar);
 	};
 
